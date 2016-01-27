@@ -1,2 +1,8 @@
-polydiv
 *.o
+.*.swp
+
+polydiv
+polymulti
+
+polysum
+polydiff

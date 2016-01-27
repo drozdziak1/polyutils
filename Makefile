@@ -1,10 +1,16 @@
 CFLAGS = -Wall -g --std=c99
 
-objs:= polydiv polynomial.o
+objs:= polynomial.o polydiv polymulti polysum polydiff
+
+all: $(objs)
+
+polymulti: polynomial.o
 
 polydiv: polynomial.o
 
-all: $(objs)
+polysum: polynomial.o
+
+polydiff: polynomial.o
 
 clean:
 	rm -rf $(objs)

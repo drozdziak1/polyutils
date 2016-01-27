@@ -1,12 +1,11 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "polynomial.h"
 
 int main(void)
 {
     int deg1, deg2;
-    Polynomial *poly1, *poly2, **qr; // qr - quotient and remainder array
+    Polynomial *poly1, *poly2, *product;
 
     printf("Give me the degrees of your polynomials (separate with space): ");
     scanf("%d %d", &deg1, &deg2);
@@ -19,7 +18,7 @@ int main(void)
     puts("Define the first polynomial:");
     scan_poly(poly1);
 
-    // ...and show it to the user
+    // ...and present it to the user
     puts("The first polynomial: ");
     print_poly(poly1);
 
@@ -33,23 +32,16 @@ int main(void)
     puts("The second polynomial: ");
     print_poly(poly2);
 
-    qr = div_poly(poly1, poly2); // Do the math
-
     puts("\n");
 
-    puts("Quotient:");
-    print_poly(qr[0]);
+    product = multiply_poly(poly1, poly2);
 
-    putchar('\n');
-
-    puts("Remainder:");
-    print_poly(qr[1]);
+    puts("Sum");
+    print_poly(product);
 
     del_poly(poly1);
     del_poly(poly2);
-    del_poly(qr[0]);
-    del_poly(qr[1]);
-    free(qr);
+    del_poly(product);
 
     return 0;
 }

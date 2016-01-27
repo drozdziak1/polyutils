@@ -108,8 +108,10 @@ Polynomial** div_poly(Polynomial* poly1, Polynomial* poly2)
 
             r->coeffs[0] = poly1->coeffs[i];
 
+            // Calculate another coefficient for the quotient
             q->coeffs[i] = r->coeffs[deg2] / poly2->coeffs[deg2];
 
+            // Calculate next temporary polynomial
             for (int j = deg2; j > 0; j--) {
 
                 r->coeffs[j] = r->coeffs[j - 1];
@@ -117,6 +119,7 @@ Polynomial** div_poly(Polynomial* poly1, Polynomial* poly2)
             }
         }
 
+        // Truncate r's redundant intercept
         r_trunc = mk_poly(deg2 - 1);
 
         for (int i = 0; i < deg2; i++)
@@ -126,12 +129,63 @@ Polynomial** div_poly(Polynomial* poly1, Polynomial* poly2)
         r = r_trunc;
     }
     else {
-        q = mk_poly(0);
-        q->coeffs[0] = 0;
+        q = mk_poly(0); // (0.00)
         r = cpy_poly(poly1);
     }
 
     ret[0] = q;
     ret[1] = r;
     return ret;
+}
+
+Polynomial* multiply_poly(Polynomial* poly1, Polynomial* poly2)
+{
+    int deg1 = poly1->deg;
+    int deg2 = poly2->deg;
+
+    Polynomial* product = mk_poly(deg1 + deg2);
+
+    for (int i = 0; i <= deg1; i++)
+        for (int j = 0; j <= deg2; j++) {
+            product->coeffs[i + j] += poly1->coeffs[i] * poly2->coeffs[j];
+        }
+
+    return product;
+}
+
+Polynomial* add_poly(Polynomial* poly1, Polynomial* poly2)
+{
+    Polynomial* sum;
+
+    // Make sure the first pointer has higher degree than the second
+    if (poly1->deg < poly2->deg) {
+
+        sum = poly1;
+        poly1 = poly2;
+        poly2 = sum;
+    }
+
+    /* Coefficients higher than deg2 won't change anyway,
+     * so it's safe to copy them from poly1 already.
+     */
+    sum = cpy_poly(poly1);
+
+    for (int i = 0; i <= poly2->deg; i++)
+        sum->coeffs[i] = poly1->coeffs[i] + poly2->coeffs[i];
+
+    return sum;
+}
+
+Polynomial* subtract_poly(Polynomial* poly1, Polynomial* poly2)
+{
+    Polynomial* diff = cpy_poly(poly2);
+
+    // Negate poly2's coefficients...
+    for (int i = 0; i <= poly2->deg; i++)
+        diff->coeffs[i] = -poly2->coeffs[i];
+
+    // ...to reuse add_poly()
+    diff = add_poly(poly1, diff);
+
+    return diff;
 }
